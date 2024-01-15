@@ -15,7 +15,6 @@ public class ReplayPlayer : MonoBehaviour
     [SerializeField] private TMPro.TMP_Text _timeText = null;
     [SerializeField] private Image _levelProgress = null;
     [SerializeField] private Image _healthFill = null;
-    [SerializeField] private ReplayUpgradablesUI _upgradablesUI = null;
     [SerializeField] private Slider _frameSlider = null;
     [SerializeField] private TMPro.TMP_InputField _remoteReplayName = null;
 
@@ -185,12 +184,14 @@ public class ReplayPlayer : MonoBehaviour
             Destroy(_idToBehaviour[unusedID].gameObject);
             _idToBehaviour.Remove(unusedID);
         }
-
-        _upgradablesUI.DrawFrame(frame.Upgrades);
     }
 
     public void DrawObject(ReplayObject obj)
     {
+        if (obj == null) { { Debug.LogWarning("Replay Object Null"); } return; }
+        {
+            
+        }
         if (_idToBehaviour.ContainsKey(obj.id))
         {
             var behaviour = _idToBehaviour[obj.id];
