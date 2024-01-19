@@ -13,9 +13,9 @@ using UnityEngine;
 [System.Serializable]
 internal class ReplayData
 {
-    public ReplayFrame[] replayFrames;
-
     public float frameDuration = 1;
+
+    public ReplayFrame[] replayFrames;
 
     private const string LAST_REPLAY_KEY = "lastReplay";
     private const string WAS_LAST_REPLAY_SENT_KEY = "lastReplaySent";

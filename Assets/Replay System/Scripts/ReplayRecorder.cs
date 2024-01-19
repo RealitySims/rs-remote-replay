@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ReplayRecorder: MonoBehaviour
+public class ReplayRecorder : MonoBehaviour
 {
     [SerializeField] private float _recordingDuration = 90;
     [SerializeField] private float _frameDuration = 1;
     [SerializeField] private float _startTime = 0;
     [SerializeField] private bool _cacheReplay = true;
 
+    [SerializeField] private Camera _camera = null;
+
     private List<ReplayFrame> _replayFrames = null;
     private bool _isRecording;
 
     public bool HasSavedRemoteReplay { get; private set; } = false;
     public string RemoteReplay { get; private set; } = null;
-
 
     private void Start()
     {
@@ -92,20 +93,33 @@ public class ReplayRecorder: MonoBehaviour
     public void RecordFrame(float time, int index)
     {
         Log($"Recording Frame {time} {index}");
+
         ReplayFrame frame = new ReplayFrame()
         {
             Time = time,
- //           PlayerLevel = Player.Ins.CurrentLevel,
- //           PlayerHealth = Player.Ins.Health.Percent,
- //           LevelProgress = Player.Ins.GetCurrentExperienceProgressRatio(),
- //           Player = Player.Ins.GetReplayObject(),
+            //           PlayerLevel = Player.Ins.CurrentLevel,
+            //           PlayerHealth = Player.Ins.Health.Percent,
+            //           LevelProgress = Player.Ins.GetCurrentExperienceProgressRatio(),
+            //           Player = Player.Ins.GetReplayObject(),
+            Camera = GetCameraObject(),
             Objects = GetObjects().ToArray(),
             Upgrades = new Dictionary<int, int>(),
         };
-
         _replayFrames.Add(frame);
     }
 
+    private ReplayObject GetCameraObject()
+    {
+        Camera cam = _camera ? _camera : Camera.main;
+        if (cam == null) { return new ReplayObject(); }
+
+        return new ReplayObject()
+        {
+            Position = cam.transform.position,
+            id = 0,
+            name = cam.name,
+        };
+    }
 
     public IEnumerable<ReplayObject> GetObjects()
     {
@@ -113,6 +127,5 @@ public class ReplayRecorder: MonoBehaviour
         {
             yield return recordable.GetReplayObject();
         }
-
     }
 }

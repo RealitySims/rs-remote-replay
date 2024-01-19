@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class ReplayFrame
@@ -8,7 +9,7 @@ public class ReplayFrame
     public float LevelProgress;
     public float PlayerHealth;
     public float PlayerLevel;
-    public ReplayObject Player;
+    public ReplayObject Camera;
     public ReplayObject[] Objects;
     public Dictionary<int, int> Upgrades = new Dictionary<int, int>();
 }

@@ -76,16 +76,6 @@ public class ReplayPlayer : MonoBehaviour
         });
     }
 
-    private void Update()
-    {
-        if (_idToBehaviour.ContainsKey(0))
-        {
-            Vector3 target = _idToBehaviour[0].transform.position - transform.forward * 10;
-
-            _camera.transform.position = Vector3.Lerp(_camera.transform.position, target, Time.deltaTime * 2);
-        }
-    }
-
     public void PlayReplay()
     {
         PauseReplay();
@@ -163,21 +153,27 @@ public class ReplayPlayer : MonoBehaviour
     {
         _usedBehaviours = new HashSet<int>();
 
-        DrawObject(frame.Player);
+        // Set camera position
+        if (frame.Camera != null)
+        {
+            Vector3 cameraPosition = frame.Camera.Position - transform.forward * 10;
+            _camera.transform.position = cameraPosition;
+        }
 
+        // Draw Objects
         foreach (var obj in frame.Objects)
         {
             if (obj.id == 0) { obj.id = GetUniqueId(); }
             DrawObject(obj);
         }
 
-        // update UI
+        // Update UI
         _playerLevel.SetText($"{frame.PlayerLevel}");
         _levelProgress.fillAmount = frame.LevelProgress;
         _healthFill.fillAmount = frame.PlayerHealth;
         _timeText.SetText(FormatTimeElapsed(frame.Time));
 
-        // remoe unused
+        // Remove Unused
         var unusedBehaviours = _idToBehaviour.Keys.Except(_usedBehaviours);
         foreach (var unusedID in unusedBehaviours.ToArray())
         {
@@ -190,7 +186,6 @@ public class ReplayPlayer : MonoBehaviour
     {
         if (obj == null) { { Debug.LogWarning("Replay Object Null"); } return; }
         {
-            
         }
         if (_idToBehaviour.ContainsKey(obj.id))
         {
