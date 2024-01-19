@@ -1,28 +1,27 @@
 #if !UNITY_WEBGL
 
 using Firebase;
+using Firebase.Analytics;
 using Firebase.Extensions;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 #endif
 
 public class FirebaseManager : MonoBehaviour
 {
-    public static event Action LoadedRemoteConfig;
-
-    public static string UID { get; private set; } = "-";
-
     public static string AnonymousID { get; private set; } = "-";
 
     public static FirebaseManager Ins { get; private set; }
 
 #if !UNITY_WEBGL
     private FirebaseApp app;
+    private bool _isFirebaseReady;
 
     private static string SAVE_FILE => Application.persistentDataPath + "/firebase_persistence.json";
 
-    protected void Awake()
+    private void Awake()
     {
         Ins = this;
         transform.SetParent(null);
@@ -41,6 +40,8 @@ public class FirebaseManager : MonoBehaviour
                 app = Firebase.FirebaseApp.DefaultInstance;
 
                 // Set a flag here to indicate whether Firebase is ready to use by your app.
+                _isFirebaseReady = true;
+
                 SignInAnonymously();
             }
             else
@@ -48,6 +49,7 @@ public class FirebaseManager : MonoBehaviour
                 UnityEngine.Debug.LogError(System.String.Format(
                   "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
                 // Firebase Unity SDK is not safe to use here.
+                _isFirebaseReady = false;
             }
         });
     }
@@ -82,6 +84,18 @@ public class FirebaseManager : MonoBehaviour
                 Debug.LogError(e.Message);
             }
         });
+    }
+
+    public void LogReplayUploaded(string fileName, int session)
+    {
+        if (!_isFirebaseReady) { return; }
+
+        var parameters = new List<Parameter>
+        {
+            new Parameter("file_name", fileName),
+            new Parameter("session", session)
+        };
+        FirebaseAnalytics.LogEvent("replay_uploaded", parameters.ToArray());
     }
 
 #endif

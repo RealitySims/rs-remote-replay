@@ -96,7 +96,6 @@ internal class ReplayData
         MetadataChange metadata = new MetadataChange();
         metadata.ContentType = "replay"; // Set the appropriate content type
         metadata.CustomMetadata = new Dictionary<string, string>() {
-            { "uid", FirebaseManager.UID},
             { "aid", userID },
         };
 
@@ -115,7 +114,7 @@ internal class ReplayData
                     remoteSaveSuccessful(fileName);
                     PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, true.ToString());
                     // Handle the success...
-                    //EventLogging.ReplayUploaded(fileName, replayId);
+                    FirebaseManager.Ins.LogReplayUploaded(fileName, replayId);
                 }
             });
     }
