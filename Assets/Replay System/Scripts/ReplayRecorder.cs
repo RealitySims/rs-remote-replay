@@ -54,7 +54,7 @@ public class ReplayRecorder : MonoBehaviour
     }
 
     /// <summary>
-    /// Set the replays recorded by the replay.
+    /// Set the camera recorded by the replay.
     /// </summary>
     public void SetCamera(Camera camera)
     {
