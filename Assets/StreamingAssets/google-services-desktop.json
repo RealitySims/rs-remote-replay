@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "628277922955",
+    "project_id": "remote-replay-demo",
+    "storage_bucket": "remote-replay-demo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:628277922955:android:4ac1c3bc2822a4a326188e",
+        "android_client_info": {
+          "package_name": "com.realitysims.remotereplay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL342Pk4ek3grrYg9lmvuKDhpLsGW-oo0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
