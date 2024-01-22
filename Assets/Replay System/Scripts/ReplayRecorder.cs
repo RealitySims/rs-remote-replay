@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class ReplayRecorder : MonoBehaviour
@@ -17,7 +18,9 @@ public class ReplayRecorder : MonoBehaviour
     [Tooltip("Start replay automatically upon scene load.")]
     [SerializeField] private bool _recordAutomatically = true;
 
-    [SerializeField] private bool _cacheReplay = true;
+    [Tooltip("Will cache replay localy and if upload failed try to uppload it at next oppertunity.")]
+    [SerializeField] private bool _cacheLatestReplay = true;
+
     private List<ReplayFrame> _replayFrames = null;
 
     private Queue<string> _messageQueue = new Queue<string>();
@@ -75,15 +78,10 @@ public class ReplayRecorder : MonoBehaviour
         _recordingDuration = duration;
     }
 
-    private void Log(string message)
-    {
-        Debug.Log($"ReplayRecorder: {message}");
-    }
-
     private IEnumerator RecordReplay(bool persistUntilSaved = false)
     {
         _replayFrames = new List<ReplayFrame>();
-        ShowUIMessage("Starting Recording");
+        LogMessage("Starting Recording");
 
         IsRecording = true;
 
@@ -95,7 +93,7 @@ public class ReplayRecorder : MonoBehaviour
         {
             if (_recordingDuration < _time)
             {
-                ShowUIMessage("Replay Finished");
+                LogMessage("Replay Finished");
                 break;
             }
 
@@ -117,7 +115,7 @@ public class ReplayRecorder : MonoBehaviour
     private void SaveReplay(List<ReplayFrame> replayFrames)
     {
         var replayData = new ReplayData(replayFrames, _frameDuration);
-        replayData.Save(RemoteSaveComplete, _cacheReplay);
+        replayData.Save(RemoteSaveComplete, _cacheLatestReplay, logHandler: LogMessage);
     }
 
     private void RemoteSaveComplete(string name)
@@ -129,7 +127,6 @@ public class ReplayRecorder : MonoBehaviour
 
     private void RecordFrame(float time, int index)
     {
-        Log($"Recording Frame {time} {index}");
 
         ReplayFrame frame = new ReplayFrame()
         {
@@ -140,7 +137,6 @@ public class ReplayRecorder : MonoBehaviour
             //           Player = Player.Ins.GetReplayObject(),
             Camera = GetCameraObject(),
             Objects = GetObjects().ToArray(),
-            Upgrades = new Dictionary<int, int>(),
         };
         _replayFrames.Add(frame);
     }
@@ -189,10 +185,12 @@ public class ReplayRecorder : MonoBehaviour
             // Set the style for the message
             GUIStyle style = new GUIStyle();
             style.fontSize = 24;
+            style.alignment = TextAnchor.MiddleCenter;
             style.normal.textColor = Color.white;
+            style.wordWrap = true;
 
             // Position for the message
-            Rect position = new Rect(Screen.width / 2 - 100, 50, 200, 100);
+            Rect position = new Rect(0, 50, Screen.width, 100);
 
             // Draw the message
             GUI.Label(position, message, style);
@@ -220,8 +218,9 @@ public class ReplayRecorder : MonoBehaviour
         }
     }
 
-    public void ShowUIMessage(string msg)
+    public void LogMessage(string msg)
     {
+        Debug.Log($"<color=yellow>ReplayRecorder</color>: {msg}");
         _messageQueue.Enqueue(msg);
     }
 }

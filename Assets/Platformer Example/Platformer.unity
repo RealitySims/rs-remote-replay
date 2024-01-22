@@ -1163,7 +1163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f2b29bf747c56443b37c1eb9760ba3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _recordingDuration: 15
+  _recordingDuration: 5
   _frameDuration: 0.1
   _camera: {fileID: 765275097}
   _recordAutomatically: 1

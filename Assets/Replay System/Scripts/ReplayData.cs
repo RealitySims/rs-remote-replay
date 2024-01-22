@@ -54,7 +54,7 @@ internal class ReplayData
         }));
     }
 
-    public void Save(Action<string> remoteSaveSuccessful, bool cacheReplay)
+    public void Save(Action<string> remoteSaveSuccessful, bool cacheReplay, Action<string> logHandler = null)
     {
         var settings = new JsonSerializerSettings();
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -67,28 +67,31 @@ internal class ReplayData
         PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, cacheReplay ? false.ToString() : true.ToString());
         PlayerPrefs.SetInt(LAST_REPLAY_ID_KEY, replayID);
 
-        SaveToFirebase(json, replayID, remoteSaveSuccessful);
+        SaveToFirebase(json, replayID, remoteSaveSuccessful, logHandler);
     }
 
-    private static void SaveToFirebase(string json, int replayId, Action<string> remoteSaveSuccessful)
+    private static void SaveToFirebase(string json, int replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
     {
+        logHandler ??= Debug.Log;
         string data = CompressString(json);
-        UploadReplayToFirebase(data, replayId, remoteSaveSuccessful);
+        UploadReplayToFirebase(data, replayId, remoteSaveSuccessful, logHandler);
     }
 
-    public static void UploadReplayToFirebase(string content, int replayId, Action<string> remoteSaveSuccessful)
+    public static void UploadReplayToFirebase(string content, int replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
     {
         string userID = FirebaseManager.AnonymousID;
         if (userID == "-")
         {
-            Debug.LogError("No authenticated user found.");
+            logHandler?.Invoke($"No authenticated user found.");
+            return;
         }
+
         StorageReference replaysRef = GetReplayRef();
 
         string fileName = $"{userID}_{replayId}.replay";
         StorageReference replayRef = replaysRef.Child(fileName);
 
-        Debug.Log($"Attempting to upload replay: {fileName}");
+        logHandler?.Invoke($"Attempting to upload replay: {fileName}");
 
         // Convert the string to a byte array
         byte[] contentBytes = Encoding.UTF8.GetBytes(content);
@@ -105,12 +108,12 @@ internal class ReplayData
             {
                 if (task.IsFaulted || task.IsCanceled)
                 {
-                    Debug.LogError("Upload failed: " + task.Exception);
+                    logHandler?.Invoke("Upload failed: " + task.Exception);
                     // Handle the error...
                 }
                 else
                 {
-                    Debug.Log("Upload completed successfully");
+                    logHandler?.Invoke("Upload completed successfully");
                     remoteSaveSuccessful(fileName);
                     PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, true.ToString());
                     // Handle the success...

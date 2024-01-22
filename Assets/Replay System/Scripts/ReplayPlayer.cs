@@ -11,10 +11,8 @@ public class ReplayPlayer : MonoBehaviour
     [SerializeField] private Camera _camera = null;
 
     [SerializeField] private TMPro.TMP_Text _frameText = null;
-    [SerializeField] private TMPro.TMP_Text _playerLevel = null;
     [SerializeField] private TMPro.TMP_Text _timeText = null;
-    [SerializeField] private Image _levelProgress = null;
-    [SerializeField] private Image _healthFill = null;
+
     [SerializeField] private Slider _frameSlider = null;
     [SerializeField] private TMPro.TMP_InputField _remoteReplayName = null;
 
@@ -168,9 +166,6 @@ public class ReplayPlayer : MonoBehaviour
         }
 
         // Update UI
-        _playerLevel.SetText($"{frame.PlayerLevel}");
-        _levelProgress.fillAmount = frame.LevelProgress;
-        _healthFill.fillAmount = frame.PlayerHealth;
         _timeText.SetText(FormatTimeElapsed(frame.Time));
 
         // Remove Unused
