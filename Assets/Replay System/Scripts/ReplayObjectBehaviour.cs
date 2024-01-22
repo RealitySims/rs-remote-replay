@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -74,11 +75,8 @@ public class ReplayObjectBehaviour : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        string[] guids = AssetDatabase.FindAssets($"\"{prefabName}\"" + " t:GameObject");
-        foreach (string guid in guids)
+        foreach (var prefab in FindAndSortPrefabs($"\"{prefabName}\"" + " t:GameObject"))
         {
-            string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(assetPath);
             if (prefab != null)
             {
                 // Check if the asset is actually a prefab and not a regular GameObject
@@ -89,6 +87,23 @@ public class ReplayObjectBehaviour : MonoBehaviour
                 }
             }
         }
+#endif
+        return null;
+    }
+
+    public static GameObject[] FindAndSortPrefabs(string searchTerm)
+    {
+#if UNITY_EDITOR
+        // Find assets that match the search term
+        string[] guids = AssetDatabase.FindAssets($"{searchTerm} t:GameObject");
+
+        // Convert GUIDs to asset paths and then load the assets
+        GameObject[] assets = guids.Select(guid => AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid))).ToArray();
+
+        // Sort the assets by name
+        System.Array.Sort(assets, (a, b) => a.name.CompareTo(b.name));
+
+        return assets;
 #endif
         return null;
     }
