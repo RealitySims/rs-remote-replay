@@ -46,6 +46,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
         {
             CopySpriteRendererAttributes(spriteRenderer);
             _renderer.transform.localScale = spriteRenderer.transform.lossyScale;
+            _renderer.transform.localPosition = GetRelativeOffset(prefab.transform, spriteRenderer.transform);
             _name.gameObject.SetActive(false);
         }
         else
@@ -53,6 +54,18 @@ public class ReplayObjectBehaviour : MonoBehaviour
             _name.gameObject.SetActive(true);
             _name.SetText(obj.name);
         }
+    }
+
+    public static Vector3 GetRelativeOffset(Transform ancestor, Transform child)
+    {
+        if (ancestor == null || child == null)
+        {
+            Debug.LogError("Ancestor or Child is null");
+            return Vector3.zero;
+        }
+
+        // Convert child's world position to ancestor's local position
+        return ancestor.InverseTransformPoint(child.position);
     }
 
     private void CopySpriteRendererAttributes(SpriteRenderer spriteRenderer)
