@@ -905,10 +905,7 @@ MonoBehaviour:
   _objectPrefab: {fileID: 2836365584007265364, guid: d99c1ad5c4398fa4185297379627ed36, type: 3}
   _camera: {fileID: 2048925596}
   _frameText: {fileID: 7038219}
-  _playerLevel: {fileID: 563549662}
   _timeText: {fileID: 497004399}
-  _levelProgress: {fileID: 1039577214}
-  _healthFill: {fileID: 1820820404}
   _frameSlider: {fileID: 1968942458}
   _remoteReplayName: {fileID: 1583976925}
   _playButton: {fileID: 706141039}
@@ -945,7 +942,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &563549661
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1875,7 +1872,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1201964869
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2108,7 +2105,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1434764477
 RectTransform:
   m_ObjectHideFlags: 0
