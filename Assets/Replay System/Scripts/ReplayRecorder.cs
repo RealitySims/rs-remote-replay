@@ -20,9 +20,15 @@ public class ReplayRecorder : MonoBehaviour
     [SerializeField] private bool _cacheReplay = true;
     private List<ReplayFrame> _replayFrames = null;
 
+    private Queue<string> _messageQueue = new Queue<string>();
+
+    private float _messageShownDuration = 0;
+
     public bool HasSavedRemoteReplay { get; private set; } = false;
     public string RemoteReplay { get; private set; } = null;
     public bool IsRecording { get; private set; }
+
+    private float _time;
 
     private void Start()
     {
@@ -77,31 +83,31 @@ public class ReplayRecorder : MonoBehaviour
     private IEnumerator RecordReplay(bool persistUntilSaved = false)
     {
         _replayFrames = new List<ReplayFrame>();
-        Log("Starting Recording");
+        ShowUIMessage("Starting Recording");
 
         IsRecording = true;
 
-        float time = 0;
+        _time = 0;
         float lastTime = int.MinValue;
 
         int frameIndex = 0;
         while (true)
         {
-            if (_recordingDuration < time)
+            if (_recordingDuration < _time)
             {
-                Log("Replay Finished");
+                ShowUIMessage("Replay Finished");
                 break;
             }
 
-            if (time - lastTime > _frameDuration)
+            if (_time - lastTime > _frameDuration)
             {
-                RecordFrame(time, frameIndex);
+                RecordFrame(_time, frameIndex);
                 frameIndex += 1;
-                lastTime = time;
+                lastTime = _time;
             }
 
             yield return null;
-            time += Time.deltaTime;
+            _time += Time.deltaTime;
         }
 
         IsRecording = false;
@@ -158,5 +164,64 @@ public class ReplayRecorder : MonoBehaviour
         {
             yield return recordable.GetReplayObject();
         }
+    }
+
+    private void OnGUI()
+    {
+        if (!Application.isEditor) { return; }
+        DrawRecordingUI();
+        DrawMessageUI();
+    }
+
+    private void DrawMessageUI()
+    {
+        if (_messageQueue.Count > 0)
+        {
+            if (_messageShownDuration > 5)
+            {
+                _messageQueue.Dequeue();
+                _messageShownDuration = 0;
+                return;
+            }
+            _messageShownDuration += Time.unscaledDeltaTime;
+            string message = _messageQueue.Peek();
+
+            // Set the style for the message
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 24;
+            style.normal.textColor = Color.white;
+
+            // Position for the message
+            Rect position = new Rect(Screen.width / 2 - 100, 50, 200, 100);
+
+            // Draw the message
+            GUI.Label(position, message, style);
+        }
+    }
+
+    private void DrawRecordingUI()
+    {
+        if (IsRecording)
+        {
+            GUIStyle style = new GUIStyle();
+            style.fontSize = 24;
+            style.normal.textColor = Color.red;
+
+            Rect position = new Rect(10, 10, 200, 30); 
+
+            GUI.Label(position, "[REC]", style);
+
+
+            style.normal.textColor = Color.white;
+            position.y += 30; 
+
+            // Draw the label
+            GUI.Label(position, $"{ReplayPlayer.FormatTimeElapsed(_time)}", style);
+        }
+    }
+
+    public void ShowUIMessage(string msg)
+    {
+        _messageQueue.Enqueue(msg);
     }
 }
