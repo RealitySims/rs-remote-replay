@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour 
 {
@@ -31,8 +32,8 @@ public class Menu : MonoBehaviour
 	//The "map" value, is the name of the map, requested to be loaded.
 	public void PlayMap (string map)
 	{
-		PlayerPrefs.SetString("MapToLoad", map);	//Sets the PlayerPrefs string: "MapToLoad" to be the map name that was sent.
-		Application.LoadLevel(1);					//Loads the game.
+		PlayerPrefs.SetString("MapToLoad", map);    //Sets the PlayerPrefs string: "MapToLoad" to be the map name that was sent.
+        SceneManager.LoadScene("Game");                   //Loads the game.
 	}
 
 	//Called when the player wants to quit the game.

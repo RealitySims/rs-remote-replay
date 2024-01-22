@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 415258}
   - component: {fileID: 19858560}
   - component: {fileID: 19900214}
+  - component: {fileID: 5624228637559696724}
   m_Layer: 0
   m_Name: TankDeathEffect
   m_TagString: Untagged
@@ -283,7 +284,7 @@ ParticleSystem:
         m_RotationOrder: 0
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -336,7 +337,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -4822,3 +4823,15 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
+--- !u!114 &5624228637559696724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a5cd4d0545d9d46aeff65b403eca63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

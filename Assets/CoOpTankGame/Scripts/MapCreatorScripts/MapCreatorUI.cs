@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class MapCreatorUI : MonoBehaviour 
 {
@@ -19,9 +20,9 @@ public class MapCreatorUI : MonoBehaviour
 			PlayerPrefs.SetString("MapToLoad", mapName.text);
 			#if UNITY_EDITOR
 				UnityEditor.AssetDatabase.Refresh();
-			#endif
-			Application.LoadLevel(1);
-		}
+#endif
+            SceneManager.LoadScene("Game");
+        }
 	}
 
 	//Called to set the error text.

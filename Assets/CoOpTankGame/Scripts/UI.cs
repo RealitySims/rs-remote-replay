@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UI : MonoBehaviour 
 {
@@ -70,6 +71,6 @@ public class UI : MonoBehaviour
 	//Called when a player wins and the HOME button is pressed, or if escape is pressed.
 	public void GoToMenu ()
 	{
-		Application.LoadLevel(0);	//Loads the menu level.
-	}
+        SceneManager.LoadScene("Menu"); //Loads the menu level.
+    }
 }
