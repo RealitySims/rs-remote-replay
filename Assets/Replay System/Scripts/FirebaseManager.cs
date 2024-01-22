@@ -19,8 +19,6 @@ public class FirebaseManager : MonoBehaviour
     private FirebaseApp app;
     private bool _isFirebaseReady;
 
-    private static string SAVE_FILE => Application.persistentDataPath + "/firebase_persistence.json";
-
     private void Awake()
     {
         Ins = this;
