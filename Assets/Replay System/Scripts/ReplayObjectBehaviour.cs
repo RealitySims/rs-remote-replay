@@ -9,6 +9,20 @@ public class ReplayObjectBehaviour : MonoBehaviour
 
     [SerializeField] private static Dictionary<string, GameObject> _prefabCache = new Dictionary<string, GameObject>();
 
+    private Vector3 _initialPosition = Vector3.zero;
+    private Vector3 _targetPosition = Vector3.zero;
+    private float _lerpDuration;
+    private float _lerpProgress = 1;
+
+    private void Update()
+    {
+        if (_lerpProgress < 1)
+        {
+            _lerpProgress += Time.deltaTime / _lerpDuration;
+            transform.position = Vector3.Lerp(_initialPosition, _targetPosition, _lerpProgress);
+        }
+    }
+
     public void Initialize(ReplayObject obj, bool useRealPrefab = false)
     {
         transform.position = obj.Position;
@@ -67,15 +81,18 @@ public class ReplayObjectBehaviour : MonoBehaviour
         return null;
     }
 
-    internal void UpdatePosition(ReplayObject obj, float duration)
+    public void UpdatePosition(ReplayObject obj, float duration)
     {
         if (Vector3.Distance(obj.Position, transform.position) < 10)
         {
-            transform.position = obj.Position;
-            Debug.LogWarning("interpolation not implemented.");
+            _lerpDuration = duration;
+            _lerpProgress = 0;
+            _initialPosition = transform.position;
+            _targetPosition = obj.Position;
         }
         else
         {
+            _lerpProgress = 1;
             transform.position = obj.Position;
         }
     }
