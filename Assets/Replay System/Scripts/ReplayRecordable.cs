@@ -26,7 +26,7 @@ public class ReplayRecordable : MonoBehaviour
 
     private static string TrimNumberInParentheses(string input)
     {
-        string pattern = @" \([^)]*\)$";
+        string pattern = @"\([^)]*\)$";
         string result = Regex.Replace(input, pattern, "");
         return result.Trim();
     }
