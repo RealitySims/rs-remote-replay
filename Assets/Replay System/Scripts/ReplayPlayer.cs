@@ -79,6 +79,11 @@ public class ReplayPlayer : MonoBehaviour
         PauseReplay();
         _playCoroutine = StartCoroutine(PlayCoroutine());
 
+        if (Frame == _replay.replayFrames.Length - 1)
+        {
+            InitializeReplay();
+        }
+
         IEnumerator PlayCoroutine()
         {
             SetPlayState(true);
