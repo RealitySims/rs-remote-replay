@@ -43,7 +43,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
         }
         else if (prefab && spriteRenderer)
         {
-            _renderer.sprite = spriteRenderer.sprite;
+            CopySpriteRendererAttributes(spriteRenderer);
             _renderer.transform.localScale = spriteRenderer.transform.lossyScale;
             _name.gameObject.SetActive(false);
         }
@@ -52,6 +52,18 @@ public class ReplayObjectBehaviour : MonoBehaviour
             _name.gameObject.SetActive(true);
             _name.SetText(obj.name);
         }
+    }
+
+    private void CopySpriteRendererAttributes(SpriteRenderer spriteRenderer)
+    {
+        _renderer.sprite = spriteRenderer.sprite;
+        _renderer.color = spriteRenderer.color;
+        _renderer.drawMode = spriteRenderer.drawMode;
+        _renderer.size = spriteRenderer.size;
+        _renderer.tileMode = spriteRenderer.tileMode;
+        _renderer.sortingOrder = spriteRenderer.sortingOrder;
+        _renderer.sharedMaterial = spriteRenderer.sharedMaterial;
+        _renderer.spriteSortPoint = spriteRenderer.spriteSortPoint;
     }
 
     public static GameObject GetPrefab(string prefabName)
