@@ -8,7 +8,7 @@ public class ReplayPlayer : MonoBehaviour
 {
     [SerializeField] private bool _useRealprefabs = false;
     [SerializeField] private ReplayObjectBehaviour _objectPrefab = null;
-    [SerializeField] private Camera _camera = null;
+    [SerializeField] private ReplayObjectBehaviour _camera = null;
 
     [SerializeField] private TMPro.TMP_Text _frameText = null;
     [SerializeField] private TMPro.TMP_Text _timeText = null;
@@ -155,7 +155,7 @@ public class ReplayPlayer : MonoBehaviour
         if (frame.Camera != null)
         {
             Vector3 cameraPosition = frame.Camera.Position - transform.forward * 10;
-            _camera.transform.position = cameraPosition;
+            _camera.UpdatePosition(cameraPosition, _replay.frameDuration);
         }
 
         // Draw Objects

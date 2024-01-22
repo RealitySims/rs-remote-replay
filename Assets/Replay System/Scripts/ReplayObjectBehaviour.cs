@@ -14,7 +14,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
     private float _lerpDuration;
     private float _lerpProgress = 1;
 
-    private void Update()
+    private void LateUpdate()
     {
         if (_lerpProgress < 1)
         {
@@ -95,17 +95,22 @@ public class ReplayObjectBehaviour : MonoBehaviour
 
     public void UpdatePosition(ReplayObject obj, float duration)
     {
-        if (Vector3.Distance(obj.Position, transform.position) < 10)
+        UpdatePosition(obj.Position, duration);
+    }
+
+    public void UpdatePosition(Vector3 cameraPosition, float duration)
+    {
+        if (Vector3.Distance(cameraPosition, transform.position) < 10)
         {
             _lerpDuration = duration;
             _lerpProgress = 0;
             _initialPosition = transform.position;
-            _targetPosition = obj.Position;
+            _targetPosition = cameraPosition;
         }
         else
         {
             _lerpProgress = 1;
-            transform.position = obj.Position;
+            transform.position = cameraPosition;
         }
     }
 }
