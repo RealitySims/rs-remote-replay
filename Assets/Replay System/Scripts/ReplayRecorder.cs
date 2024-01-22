@@ -15,17 +15,22 @@ public class ReplayRecorder : MonoBehaviour
     [Tooltip("Camera that will be recorded.")]
     [SerializeField] private Camera _camera = null;
 
+    [Tooltip("Name that is going to be used for the replay.")]
+    [SerializeField] private string _replayName = "default";
+
     [Tooltip("Start replay automatically upon scene load.")]
     [SerializeField] private bool _recordAutomatically = true;
 
     [Tooltip("Will cache replay localy and if upload failed try to uppload it at next oppertunity.")]
     [SerializeField] private bool _cacheLatestReplay = true;
+    private string _currentReplayName;
     private List<ReplayFrame> _replayFrames = null;
+
+
 
     private Queue<string> _messageQueue = new Queue<string>();
 
     private float _messageShownDuration = 0;
-    private string _replayName = "default";
 
     public bool HasSavedRemoteReplay { get; private set; } = false;
     public string RemoteReplay { get; private set; } = null;
@@ -37,17 +42,17 @@ public class ReplayRecorder : MonoBehaviour
     {
         if (_recordAutomatically)
         {
-            StartRecording();
+            StartRecording(_replayName);
         }
     }
 
     /// <summary>
     /// Start recording the replay.
     /// </summary>
-    public void StartRecording(string replayName = "default")
+    public void StartRecording(string replayName = null)
     {
         StopRecording();
-        StartCoroutine(RecordReplay(replayName));
+        StartCoroutine(RecordReplay(replayName ?? _replayName));
     }
 
     /// <summary>
@@ -80,9 +85,9 @@ public class ReplayRecorder : MonoBehaviour
 
     private IEnumerator RecordReplay(string replayName, bool persistUntilSaved = false)
     {
-        _replayName = replayName;
+        _currentReplayName = replayName;
         _replayFrames = new List<ReplayFrame>();
-        LogMessage("Starting Recording");
+        LogMessage($"Starting Recording: {_currentReplayName}");
 
         IsRecording = true;
 
@@ -100,7 +105,7 @@ public class ReplayRecorder : MonoBehaviour
 
             if (_time - lastTime > _frameDuration)
             {
-                RecordFrame(_time, frameIndex);
+                RecordFrame(_time);
                 frameIndex += 1;
                 lastTime = _time;
             }
@@ -115,7 +120,7 @@ public class ReplayRecorder : MonoBehaviour
 
     private void SaveReplay(List<ReplayFrame> replayFrames)
     {
-        var replayData = new ReplayData(_replayName, replayFrames, _frameDuration);
+        var replayData = new ReplayData(_currentReplayName, replayFrames, _frameDuration);
         replayData.Save(RemoteSaveComplete, _cacheLatestReplay, logHandler: LogMessage);
     }
 
@@ -126,7 +131,7 @@ public class ReplayRecorder : MonoBehaviour
         HasSavedRemoteReplay = true;
     }
 
-    private void RecordFrame(float time, int index)
+    private void RecordFrame(float time)
     {
 
         ReplayFrame frame = new ReplayFrame()
