@@ -86,14 +86,14 @@ public class FirebaseManager : MonoBehaviour
         });
     }
 
-    public void LogReplayUploaded(string fileName, int session)
+    public void LogReplayUploaded(string fileName, string name)
     {
         if (!_isFirebaseReady) { return; }
 
         var parameters = new List<Parameter>
         {
             new Parameter("file_name", fileName),
-            new Parameter("session", session)
+            new Parameter("replay_name", name)
         };
         FirebaseAnalytics.LogEvent("replay_uploaded", parameters.ToArray());
     }

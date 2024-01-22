@@ -15,14 +15,17 @@ internal class ReplayData
 {
     public float frameDuration = 1;
 
+    public string replayName = "default";
+
     public ReplayFrame[] replayFrames;
 
     private const string LAST_REPLAY_KEY = "lastReplay";
-    private const string WAS_LAST_REPLAY_SENT_KEY = "lastReplaySent";
+    private const string WAS_LAST_REPLAY_SENT_KEY = "wasLastReplaySent";
     private const string LAST_REPLAY_ID_KEY = "lastReplayID";
 
-    public ReplayData(IEnumerable<ReplayFrame> replayFrames, float frameDuration)
+    public ReplayData(string replayName, IEnumerable<ReplayFrame> replayFrames, float frameDuration)
     {
+        this.replayName = replayName;
         this.replayFrames = replayFrames.ToArray();
         this.frameDuration = frameDuration;
     }
@@ -60,24 +63,21 @@ internal class ReplayData
         settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
         string json = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
 
-        int replayID = 0;
-        Debug.LogWarning("no game sessions id");
-
         PlayerPrefs.SetString(LAST_REPLAY_KEY, json);
         PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, cacheReplay ? false.ToString() : true.ToString());
-        PlayerPrefs.SetInt(LAST_REPLAY_ID_KEY, replayID);
+        PlayerPrefs.SetString(LAST_REPLAY_ID_KEY, replayName);
 
-        SaveToFirebase(json, replayID, remoteSaveSuccessful, logHandler);
+        SaveToFirebase(json, replayName, remoteSaveSuccessful, logHandler);
     }
 
-    private static void SaveToFirebase(string json, int replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
+    private static void SaveToFirebase(string json, string replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
     {
         logHandler ??= Debug.Log;
         string data = CompressString(json);
         UploadReplayToFirebase(data, replayId, remoteSaveSuccessful, logHandler);
     }
 
-    public static void UploadReplayToFirebase(string content, int replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
+    public static void UploadReplayToFirebase(string content, string replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
     {
         string userID = FirebaseManager.AnonymousID;
         if (userID == "-")
@@ -181,8 +181,8 @@ internal class ReplayData
         {
             Debug.Log($"<color=yellow>Attempting to send replay from cache.</color>");
             string json = PlayerPrefs.GetString(LAST_REPLAY_KEY);
-            int id = PlayerPrefs.GetInt(LAST_REPLAY_ID_KEY, 0);
-            SaveToFirebase(json, id, (string value) => { Debug.Log($"<color=green>Replay successfully sent from cache</color>: {value}"); });
+            string name = PlayerPrefs.GetString(LAST_REPLAY_ID_KEY, "default");
+            SaveToFirebase(json, name, (string value) => { Debug.Log($"<color=green>Replay successfully sent from cache</color>: {value}"); });
         }
     }
 }

@@ -20,12 +20,12 @@ public class ReplayRecorder : MonoBehaviour
 
     [Tooltip("Will cache replay localy and if upload failed try to uppload it at next oppertunity.")]
     [SerializeField] private bool _cacheLatestReplay = true;
-
     private List<ReplayFrame> _replayFrames = null;
 
     private Queue<string> _messageQueue = new Queue<string>();
 
     private float _messageShownDuration = 0;
+    private string _replayName = "default";
 
     public bool HasSavedRemoteReplay { get; private set; } = false;
     public string RemoteReplay { get; private set; } = null;
@@ -44,10 +44,10 @@ public class ReplayRecorder : MonoBehaviour
     /// <summary>
     /// Start recording the replay.
     /// </summary>
-    public void StartRecording()
+    public void StartRecording(string replayName = "default")
     {
         StopRecording();
-        StartCoroutine(RecordReplay());
+        StartCoroutine(RecordReplay(replayName));
     }
 
     /// <summary>
@@ -78,8 +78,9 @@ public class ReplayRecorder : MonoBehaviour
         _recordingDuration = duration;
     }
 
-    private IEnumerator RecordReplay(bool persistUntilSaved = false)
+    private IEnumerator RecordReplay(string replayName, bool persistUntilSaved = false)
     {
+        _replayName = replayName;
         _replayFrames = new List<ReplayFrame>();
         LogMessage("Starting Recording");
 
@@ -114,7 +115,7 @@ public class ReplayRecorder : MonoBehaviour
 
     private void SaveReplay(List<ReplayFrame> replayFrames)
     {
-        var replayData = new ReplayData(replayFrames, _frameDuration);
+        var replayData = new ReplayData(_replayName, replayFrames, _frameDuration);
         replayData.Save(RemoteSaveComplete, _cacheLatestReplay, logHandler: LogMessage);
     }
 
