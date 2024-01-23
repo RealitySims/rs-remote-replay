@@ -88,7 +88,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        foreach (var prefab in FindAndSortPrefabs($"\"{prefabName}\"" + " t:GameObject"))
+        foreach (var prefab in FindAndSortPrefabs(prefabName))
         {
             if (prefab != null)
             {
@@ -106,19 +106,46 @@ public class ReplayObjectBehaviour : MonoBehaviour
 
     public static GameObject[] FindAndSortPrefabs(string searchTerm)
     {
-#if UNITY_EDITOR
         // Find assets that match the search term
-        string[] guids = AssetDatabase.FindAssets($"{searchTerm} t:GameObject");
+        string[] guids = AssetDatabase.FindAssets($"{searchTerm}" + " t:GameObject");
 
         // Convert GUIDs to asset paths and then load the assets
         GameObject[] assets = guids.Select(guid => AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid))).ToArray();
 
-        // Sort the assets by name
-        System.Array.Sort(assets, (a, b) => a.name.CompareTo(b.name));
+        Debug.LogWarning(searchTerm);
+        // Sort the assets based on relevance to the search term
+        System.Array.Sort(assets, (a, b) =>
+        {
+            int aScore = CalculateRelevanceScore(a.name, searchTerm);
+            int bScore = CalculateRelevanceScore(b.name, searchTerm);
+            //Debug.Log($"{a.name} {aScore} {b.name} {bScore} {searchTerm}");
+
+            if (aScore == bScore)
+            {
+                return a.name.CompareTo(b.name); // If scores are equal, sort alphabetically
+            }
+
+            return bScore.CompareTo(aScore); // Higher score first
+        });
+
+        foreach (var term in assets)
+        {
+            Debug.Log(term.name);
+        }
 
         return assets;
-#endif
-        return null;
+    }
+
+    private static int CalculateRelevanceScore(string name, string searchTerm)
+    {
+        if (name.Equals(searchTerm, System.StringComparison.OrdinalIgnoreCase))
+            return 3; // Highest score for exact match
+        if (name.StartsWith(searchTerm, System.StringComparison.OrdinalIgnoreCase))
+            return 2; // Medium score for starting with the search term
+        if (name.Contains(searchTerm))
+            return 1; // Lower score for containing the search term
+
+        return 0; // No match
     }
 
     public void UpdatePosition(ReplayObject obj, float duration)
