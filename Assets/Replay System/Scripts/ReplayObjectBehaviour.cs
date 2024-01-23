@@ -27,6 +27,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
     public void Initialize(ReplayObject obj, bool useRealPrefab = false)
     {
         transform.position = obj.Position;
+        name = $"{obj.name}, {obj.id}";
 
         GameObject prefab = GetPrefab(obj.name);
         var spriteRenderer = prefab?.GetComponentInChildren<SpriteRenderer>();
