@@ -210,3 +210,5 @@ MonoBehaviour:
   _recordZAxis: 1
   _recordRotation: 1
   _recordScale: 1
+  _guid: fcddcfafd39841a41a7353e76b7c1590
+  _prefabName: Player1Tank

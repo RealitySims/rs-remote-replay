@@ -127,3 +127,5 @@ MonoBehaviour:
   _recordZAxis: 1
   _recordRotation: 1
   _recordScale: 1
+  _guid: 039e2529467081348b407729673112c7
+  _prefabName: Platform

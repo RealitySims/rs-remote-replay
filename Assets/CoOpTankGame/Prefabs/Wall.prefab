@@ -124,3 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1a5cd4d0545d9d46aeff65b403eca63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _recordZAxis: 1
+  _recordRotation: 1
+  _recordScale: 1
+  _guid: c3dc66808ec0315429ae3a4112018dcd
+  _prefabName: Wall

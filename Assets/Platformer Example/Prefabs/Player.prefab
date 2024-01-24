@@ -105,6 +105,8 @@ MonoBehaviour:
   _recordZAxis: 1
   _recordRotation: 1
   _recordScale: 1
+  _guid: 1567db07ae0df274488b7b8605bc1b0e
+  _prefabName: Player
 --- !u!1 &3867714703530765576
 GameObject:
   m_ObjectHideFlags: 0
