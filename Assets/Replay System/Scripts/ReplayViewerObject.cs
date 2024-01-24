@@ -41,7 +41,7 @@ public class ReplayViewerObject : MonoBehaviour
         transform.position = obj.Position;
         name = $"{obj.name}, {obj.id}";
 
-        GameObject prefab = GetPrefab(obj.name);
+        GameObject prefab = GetPrefab(obj.guid, obj.name);
         var spriteRenderer = prefab?.GetComponentInChildren<SpriteRenderer>();
         if (useRealPrefab && prefab)
         {
@@ -120,14 +120,25 @@ public class ReplayViewerObject : MonoBehaviour
         _renderer.spriteSortPoint = spriteRenderer.spriteSortPoint;
     }
 
-    public static GameObject GetPrefab(string prefabName)
+    public static GameObject GetPrefab(string guid, string prefabName)
     {
-        if (_prefabCache.ContainsKey(prefabName))
+        string key = guid + prefabName;
+        if (_prefabCache.ContainsKey(key))
         {
-            return _prefabCache[prefabName];
+            return _prefabCache[key];
         }
 
 #if UNITY_EDITOR
+        // Try to find by GUID
+        var path = AssetDatabase.GUIDToAssetPath(guid);
+        var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+
+        if (obj) {
+            _prefabCache[key] = obj;
+            return obj;
+        }
+
+        // Try name search
         foreach (var prefab in FindAndSortPrefabs(prefabName))
         {
             if (prefab != null)
@@ -135,7 +146,7 @@ public class ReplayViewerObject : MonoBehaviour
                 // Check if the asset is actually a prefab and not a regular GameObject
                 if (PrefabUtility.GetPrefabAssetType(prefab) != PrefabAssetType.NotAPrefab)
                 {
-                    _prefabCache[prefabName] = prefab;
+                    _prefabCache[key] = prefab;
                     return prefab;
                 }
             }

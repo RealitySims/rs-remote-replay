@@ -8,6 +8,7 @@ public class ReplayObject
 {
     public string name;
     public int id;
+    public string guid;
 
     // Position
     [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
