@@ -39,7 +39,7 @@ public class ReplayRecordable : MonoBehaviour
             {
                 SyncWithPrefab();
             }
-            if (_hasSynced && !_unsavedChangesToPrefab)
+            if (_hasSynced && !_unsavedChangesToPrefab && _prefab)
             {
                 _unsavedChangesToPrefab = true;
                 PrefabUtility.SavePrefabAsset(_prefab);
