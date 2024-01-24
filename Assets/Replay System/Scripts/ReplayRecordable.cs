@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class ReplayRecordable : MonoBehaviour
 {
-    [SerializeField] private bool _recordZAxis = false;
-    [SerializeField] private bool _recordRotation = false;
-    [SerializeField] private bool _recordScale = false;
+    [SerializeField] private bool _recordZAxis = true;
+    [SerializeField] private bool _recordRotation = true;
+    [SerializeField] private bool _recordScale = true;
 
     private static int _instanceCount = 0;
 
