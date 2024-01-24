@@ -157,11 +157,6 @@ public class ReplayObjectBehaviour : MonoBehaviour
             return bScore.CompareTo(aScore); // Higher score first
         });
 
-        foreach (var term in assets)
-        {
-            Debug.Log(term.name);
-        }
-
         return assets;
     }
 
