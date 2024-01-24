@@ -12,15 +12,26 @@ public class ReplayViewerObject : MonoBehaviour
 
     private Vector3 _initialPosition = Vector3.zero;
     private Vector3 _targetPosition = Vector3.zero;
-    private float _lerpDuration;
+    private float _positionLerpDuration;
     private float _lerpProgress = 1;
+
+    private Quaternion _initialRotation;
+    private Quaternion _targetRotation;
+    private float _rotationLerpDuration;
+    private float _rotationLerpProgress;
 
     private void LateUpdate()
     {
         if (_lerpProgress < 1)
         {
-            _lerpProgress += Time.deltaTime / _lerpDuration;
+            _lerpProgress += Time.deltaTime / _positionLerpDuration;
             transform.position = Vector3.Lerp(_initialPosition, _targetPosition, _lerpProgress);
+        }
+
+        if (_rotationLerpProgress < 1)
+        {
+            _rotationLerpProgress += Time.deltaTime / _rotationLerpDuration;
+            transform.rotation = Quaternion.Lerp(_initialRotation, _targetRotation, _lerpProgress);
         }
     }
 
@@ -175,29 +186,40 @@ public class ReplayViewerObject : MonoBehaviour
     public void UpdateTransformation(ReplayObject obj, float duration)
     {
         UpdatePosition(obj.Position, duration);
-        UpdateRotation(obj.Rotation);
+        UpdateRotation(obj.Rotation, duration);
         UpdateScale(obj.Scale);
     }
 
-    public void UpdatePosition(Vector3 cameraPosition, float duration)
+    public void UpdatePosition(Vector3 position, float duration)
     {
         if (duration > 0)
         {
-            _lerpDuration = duration;
+            _positionLerpDuration = duration;
             _lerpProgress = 0;
             _initialPosition = transform.position;
-            _targetPosition = cameraPosition;
+            _targetPosition = position;
         }
         else
         {
             _lerpProgress = 1;
-            transform.position = cameraPosition;
+            transform.position = position;
         }
     }
 
-    public void UpdateRotation(Vector3 eulerAngles)
+    public void UpdateRotation(Vector3 eulerAngles, float duration)
     {
-        transform.eulerAngles = eulerAngles;
+        if (duration > 0)
+        {
+            _rotationLerpDuration = duration;
+            _rotationLerpProgress = 0;
+            _initialRotation = transform.rotation;
+            _targetRotation = Quaternion.Euler(eulerAngles);
+        }
+        else
+        {
+            _rotationLerpProgress = 1;
+            transform.eulerAngles = eulerAngles;
+        }
     }
 
     public void UpdateScale(Vector3 scale)
