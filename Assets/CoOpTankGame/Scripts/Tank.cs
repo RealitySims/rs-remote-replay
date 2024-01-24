@@ -30,7 +30,14 @@ public class Tank : MonoBehaviour
 
 	void Start ()
 	{
-		direction = Vector3.up;	//Sets the tank's direction up, as that is the default rotation of the sprite.
+		direction = Vector3.up; //Sets the tank's direction up, as that is the default rotation of the sprite.
+
+		ReplayRecorder recorder = FindObjectOfType<ReplayRecorder>();
+
+		if (recorder != null )
+		{
+            recorder.RecordCustomStat($"HP_{id}", () => $"{health}");
+		}
 	}
 
 	//Called by the Game.cs script when the game starts.

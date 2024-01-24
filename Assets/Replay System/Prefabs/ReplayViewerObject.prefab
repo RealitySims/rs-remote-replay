@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 5936723186623086426}
   - component: {fileID: 2836365584007265364}
   m_Layer: 0
-  m_Name: ReplayObject
+  m_Name: ReplayViewerObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -9,4 +9,6 @@ public class ReplayFrame
 
     public ReplayObject Camera;
     public ReplayObject[] Objects;
+
+    public Dictionary<string, string> Stats;
 }

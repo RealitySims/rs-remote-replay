@@ -15,8 +15,8 @@ public class ReplayViewerObject : MonoBehaviour
     private float _positionLerpDuration;
     private float _lerpProgress = 1;
 
-    private Quaternion _initialRotation;
-    private Quaternion _targetRotation;
+    private Quaternion _initialRotation = Quaternion.identity;
+    private Quaternion _targetRotation = Quaternion.identity;
     private float _rotationLerpDuration;
     private float _rotationLerpProgress;
 
@@ -152,7 +152,6 @@ public class ReplayViewerObject : MonoBehaviour
         // Convert GUIDs to asset paths and then load the assets
         GameObject[] assets = guids.Select(guid => AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid))).ToArray();
 
-        Debug.LogWarning(searchTerm);
         // Sort the assets based on relevance to the search term
         System.Array.Sort(assets, (a, b) =>
         {

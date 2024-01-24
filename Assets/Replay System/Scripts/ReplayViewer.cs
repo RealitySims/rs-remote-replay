@@ -19,6 +19,9 @@ public class ReplayViewer : MonoBehaviour
     [SerializeField] private GameObject _playButton = null;
     [SerializeField] private GameObject _pauseButton = null;
 
+    [SerializeField] private ReplayViewerStatUI _statPrefab = null;
+    [SerializeField] private Transform _statParent = null;
+
     private int _frame = 0;
     private ReplayData _replay;
 
@@ -167,6 +170,19 @@ public class ReplayViewer : MonoBehaviour
         {
             if (obj.id == 0) { obj.id = GetUniqueId(); }
             DrawObject(obj);
+        }
+
+        // Stat UI
+
+        _statParent.DestroyChildren();
+
+        if (frame.Stats != null)
+        {
+            foreach (var pair in frame.Stats.OrderBy(p => p.Key))
+            {
+                var ui = Instantiate(_statPrefab, _statParent);
+                ui.SetText($"{pair.Key}: {pair.Value}");
+            }
         }
 
         // Update UI

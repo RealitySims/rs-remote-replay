@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,9 +36,11 @@ public class ReplayRecorder : MonoBehaviour
     public bool IsRecording { get; private set; }
 
     private float _time;
+    private Dictionary<string, Func<string>> _customStats = new Dictionary<string, Func<string>>();
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return null;
         if (_recordAutomatically)
         {
             StartRecording(_replayName);
@@ -140,8 +143,21 @@ public class ReplayRecorder : MonoBehaviour
             //           Player = Player.Ins.GetReplayObject(),
             Camera = GetCameraObject(),
             Objects = GetObjects().ToArray(),
+            Stats = GenerateCustomStats(),
         };
         _replayFrames.Add(frame);
+    }
+
+    private Dictionary<string, string> GenerateCustomStats()
+    {
+        Dictionary<string, string> dict = new();
+
+        foreach (var pair in _customStats)
+        {
+            dict[pair.Key] = pair.Value();
+        }
+
+        return dict;
     }
 
     private ReplayObject GetCameraObject()
@@ -225,5 +241,10 @@ public class ReplayRecorder : MonoBehaviour
     {
         Debug.Log($"<color=yellow>ReplayRecorder</color>: {msg}");
         _messageQueue.Enqueue(msg);
+    }
+
+    internal void RecordCustomStat(string key, Func<string> statFetcher)
+    {
+        _customStats[key] = statFetcher;
     }
 }
