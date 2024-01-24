@@ -1,9 +1,12 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class ReplayRecordable : MonoBehaviour
 {
+    [SerializeField] private bool _recordZAxis = false;
+    [SerializeField] private bool _recordRotation = false;
+    [SerializeField] private bool _recordScale = false;
+
     private static int _instanceCount = 0;
 
     private int _instanceID = 0;
@@ -16,12 +19,26 @@ public class ReplayRecordable : MonoBehaviour
 
     internal ReplayObject GetReplayObject()
     {
-        return new ReplayObject()
+        var obj = new ReplayObject()
         {
             name = TrimNumberInParentheses(name),
             id = _instanceID,
-            Position = transform.position,
         };
+
+        Vector3 pos = transform.position;
+        obj.Position = _recordZAxis ? transform.position : new Vector3(pos.x, pos.y, 0);
+
+        if (_recordRotation)
+        {
+            obj.Rotation = transform.eulerAngles;
+        }
+
+        if (_recordScale)
+        {
+            obj.Scale = transform.lossyScale;
+        }
+
+        return obj;
     }
 
     private static string TrimNumberInParentheses(string input)

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 public class ReplayRecorder : MonoBehaviour
@@ -23,10 +22,9 @@ public class ReplayRecorder : MonoBehaviour
 
     [Tooltip("Will cache replay localy and if upload failed try to uppload it at next oppertunity.")]
     [SerializeField] private bool _cacheLatestReplay = true;
+
     private string _currentReplayName;
     private List<ReplayFrame> _replayFrames = null;
-
-
 
     private Queue<string> _messageQueue = new Queue<string>();
 
@@ -133,7 +131,6 @@ public class ReplayRecorder : MonoBehaviour
 
     private void RecordFrame(float time)
     {
-
         ReplayFrame frame = new ReplayFrame()
         {
             Time = time,
@@ -155,6 +152,7 @@ public class ReplayRecorder : MonoBehaviour
         return new ReplayObject()
         {
             Position = cam.transform.position,
+            Rotation = cam.transform.eulerAngles,
             id = 0,
             name = cam.name,
         };
@@ -211,13 +209,12 @@ public class ReplayRecorder : MonoBehaviour
             style.fontSize = 24;
             style.normal.textColor = Color.red;
 
-            Rect position = new Rect(10, 10, 200, 30); 
+            Rect position = new Rect(10, 10, 200, 30);
 
             GUI.Label(position, "[REC]", style);
 
-
             style.normal.textColor = Color.white;
-            position.y += 30; 
+            position.y += 30;
 
             // Draw the label
             GUI.Label(position, $"{ReplayPlayer.FormatTimeElapsed(_time)}", style);

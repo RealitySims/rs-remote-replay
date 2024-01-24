@@ -159,8 +159,7 @@ public class ReplayPlayer : MonoBehaviour
         // Set camera position
         if (frame.Camera != null)
         {
-            Vector3 cameraPosition = frame.Camera.Position - transform.forward * 10;
-            _camera.UpdatePosition(cameraPosition, _replay.frameDuration);
+            _camera.UpdatePosition(frame.Camera.Position, _replay.frameDuration);
         }
 
         // Draw Objects
@@ -190,7 +189,7 @@ public class ReplayPlayer : MonoBehaviour
         if (_idToBehaviour.ContainsKey(obj.id))
         {
             var behaviour = _idToBehaviour[obj.id];
-            behaviour.UpdatePosition(obj, _replay.frameDuration);
+            behaviour.UpdateTransformation(obj, _replay.frameDuration);
         }
         else
         {

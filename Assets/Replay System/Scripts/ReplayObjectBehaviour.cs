@@ -26,6 +26,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
 
     public void Initialize(ReplayObject obj, bool useRealPrefab = false)
     {
+        UpdateTransformation(obj, 0);
         transform.position = obj.Position;
         name = $"{obj.name}, {obj.id}";
 
@@ -46,7 +47,7 @@ public class ReplayObjectBehaviour : MonoBehaviour
         else if (prefab && spriteRenderer)
         {
             CopySpriteRendererAttributes(spriteRenderer);
-            _renderer.transform.localScale = spriteRenderer.transform.lossyScale;
+            _renderer.transform.localScale = GetRelativeScale(prefab.transform, spriteRenderer.transform);
             _renderer.transform.localPosition = GetRelativeOffset(prefab.transform, spriteRenderer.transform);
             _name.gameObject.SetActive(false);
         }
@@ -67,6 +68,33 @@ public class ReplayObjectBehaviour : MonoBehaviour
 
         // Convert child's world position to ancestor's local position
         return ancestor.InverseTransformPoint(child.position);
+    }
+
+    public static Vector3 GetRelativeScale(Transform ancestor, Transform child)
+    {
+        if (ancestor == child)
+        {
+            return Vector3.one;
+        }
+
+        Vector3 relativeScale = child.localScale;
+        Transform currentParent = child.parent;
+
+        // Traverse up the hierarchy until we reach the ancestor
+        while (currentParent != null && currentParent != ancestor)
+        {
+            relativeScale = Vector3.Scale(relativeScale, currentParent.localScale);
+            currentParent = currentParent.parent;
+        }
+
+        // If the loop exited without finding the ancestor, they are not in the same hierarchy
+        if (currentParent != ancestor)
+        {
+            Debug.LogError("Ancestor is not a parent of the child");
+            return Vector3.one;
+        }
+
+        return relativeScale;
     }
 
     private void CopySpriteRendererAttributes(SpriteRenderer spriteRenderer)
@@ -149,14 +177,16 @@ public class ReplayObjectBehaviour : MonoBehaviour
         return 0; // No match
     }
 
-    public void UpdatePosition(ReplayObject obj, float duration)
+    public void UpdateTransformation(ReplayObject obj, float duration)
     {
         UpdatePosition(obj.Position, duration);
+        UpdateRotation(obj.Rotation);
+        UpdateScale(obj.Scale);
     }
 
     public void UpdatePosition(Vector3 cameraPosition, float duration)
     {
-        if (Vector3.Distance(cameraPosition, transform.position) < 10)
+        if (duration > 0)
         {
             _lerpDuration = duration;
             _lerpProgress = 0;
@@ -168,5 +198,15 @@ public class ReplayObjectBehaviour : MonoBehaviour
             _lerpProgress = 1;
             transform.position = cameraPosition;
         }
+    }
+
+    public void UpdateRotation(Vector3 eulerAngles)
+    {
+        transform.eulerAngles = eulerAngles;
+    }
+
+    public void UpdateScale(Vector3 scale)
+    {
+        transform.localScale = scale;
     }
 }
