@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-public class ReplayObjectBehaviour : MonoBehaviour
+public class ReplayViewerObject : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _renderer = null;
     [SerializeField] private TMPro.TMP_Text _name = null;

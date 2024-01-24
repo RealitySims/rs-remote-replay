@@ -217,7 +217,7 @@ public class ReplayRecorder : MonoBehaviour
             position.y += 30;
 
             // Draw the label
-            GUI.Label(position, $"{ReplayPlayer.FormatTimeElapsed(_time)}", style);
+            GUI.Label(position, $"{ReplayViewer.FormatTimeElapsed(_time)}", style);
         }
     }
 

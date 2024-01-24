@@ -883,7 +883,7 @@ GameObject:
   - component: {fileID: 541931881}
   - component: {fileID: 541931880}
   m_Layer: 0
-  m_Name: ReplayPlayer
+  m_Name: Replay Viewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

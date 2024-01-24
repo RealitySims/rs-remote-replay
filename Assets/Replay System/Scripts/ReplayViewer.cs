@@ -4,11 +4,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ReplayPlayer : MonoBehaviour
+public class ReplayViewer : MonoBehaviour
 {
     [SerializeField] private bool _useRealprefabs = false;
-    [SerializeField] private ReplayObjectBehaviour _objectPrefab = null;
-    [SerializeField] private ReplayObjectBehaviour _camera = null;
+    [SerializeField] private ReplayViewerObject _objectPrefab = null;
+    [SerializeField] private ReplayViewerObject _camera = null;
 
     [SerializeField] private TMPro.TMP_Text _frameText = null;
     [SerializeField] private TMPro.TMP_Text _timeText = null;
@@ -22,7 +22,7 @@ public class ReplayPlayer : MonoBehaviour
     private int _frame = 0;
     private ReplayData _replay;
 
-    private Dictionary<int, ReplayObjectBehaviour> _idToBehaviour = new Dictionary<int, ReplayObjectBehaviour>();
+    private Dictionary<int, ReplayViewerObject> _idToBehaviour = new Dictionary<int, ReplayViewerObject>();
     private HashSet<int> _usedBehaviours;
     private Coroutine _playCoroutine;
     private int _uniqueID = -1;
@@ -193,7 +193,7 @@ public class ReplayPlayer : MonoBehaviour
         }
         else
         {
-            var ins = Instantiate<ReplayObjectBehaviour>(_objectPrefab, transform);
+            var ins = Instantiate<ReplayViewerObject>(_objectPrefab, transform);
             ins.Initialize(obj, _useRealprefabs);
             _idToBehaviour[obj.id] = ins;
         }
