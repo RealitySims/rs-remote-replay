@@ -904,7 +904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f2b29bf747c56443b37c1eb9760ba3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _recordingDuration: 15
+  _recordingDuration: 30
   _frameDuration: 1
   _camera: {fileID: 2129025381}
   _replayName: tanks
