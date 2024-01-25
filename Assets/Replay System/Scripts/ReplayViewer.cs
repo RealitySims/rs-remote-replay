@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class ReplayViewer : MonoBehaviour
 {
-    [SerializeField] private bool _useRealprefabs = false;
+    private bool _useRealprefabs = false;
+
     [SerializeField] private ReplayViewerObject _objectPrefab = null;
     [SerializeField] private ReplayViewerObject _camera = null;
 
