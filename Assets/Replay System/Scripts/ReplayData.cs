@@ -59,15 +59,44 @@ internal class ReplayData
 
     public void Save(Action<string> remoteSaveSuccessful, bool cacheReplay, Action<string> logHandler = null)
     {
-        var settings = new JsonSerializerSettings();
-        settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-        string json = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
+        Task.Run(() =>
+        {
+            try
+            {
+                // Perform JSON serialization
+                var settings = new JsonSerializerSettings
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+                string json = JsonConvert.SerializeObject(this, Formatting.Indented, settings);
+                return CompressString(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("Error during serialization: " + ex.Message);
+                throw; // Rethrow the exception to be caught in ContinueWith
+            }
+        })
+        .ContinueWith(task =>
+        {
+            if (task.IsFaulted)
+            {
+                // Handle or log the exception
+                Exception ex = task.Exception.Flatten();
+                Debug.LogError("Task encountered an error: " + ex.Message);
+                // Optionally, invoke a callback or propagate the exception
+            }
+            else
+            {
+                // Process the result and perform Unity API calls
+                string data = task.Result;
+                PlayerPrefs.SetString(LAST_REPLAY_KEY, data);
+                PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, cacheReplay ? false.ToString() : true.ToString());
+                PlayerPrefs.SetString(LAST_REPLAY_ID_KEY, replayName);
 
-        PlayerPrefs.SetString(LAST_REPLAY_KEY, json);
-        PlayerPrefs.SetString(WAS_LAST_REPLAY_SENT_KEY, cacheReplay ? false.ToString() : true.ToString());
-        PlayerPrefs.SetString(LAST_REPLAY_ID_KEY, replayName);
-
-        SaveToFirebase(json, replayName, remoteSaveSuccessful, logHandler);
+                SaveToFirebase(data, replayName, remoteSaveSuccessful, logHandler);
+            }
+        }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
     private static void SaveToFirebase(string json, string replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
