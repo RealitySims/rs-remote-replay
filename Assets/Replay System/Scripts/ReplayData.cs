@@ -32,8 +32,7 @@ internal class ReplayData
 
     public static ReplayData LoadLocal()
     {
-        var json = PlayerPrefs.GetString(LAST_REPLAY_KEY);
-
+        var json = DecompressString(PlayerPrefs.GetString(LAST_REPLAY_KEY));
         ReplayData data = JsonConvert.DeserializeObject<ReplayData>(json);
         return data;
     }
