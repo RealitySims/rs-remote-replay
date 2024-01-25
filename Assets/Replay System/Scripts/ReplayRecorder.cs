@@ -137,10 +137,6 @@ public class ReplayRecorder : MonoBehaviour
         ReplayFrame frame = new ReplayFrame()
         {
             Time = time,
-            //           PlayerLevel = Player.Ins.CurrentLevel,
-            //           PlayerHealth = Player.Ins.Health.Percent,
-            //           LevelProgress = Player.Ins.GetCurrentExperienceProgressRatio(),
-            //           Player = Player.Ins.GetReplayObject(),
             Camera = GetCameraObject(),
             Objects = GetObjects().ToArray(),
             Stats = GenerateCustomStats(),

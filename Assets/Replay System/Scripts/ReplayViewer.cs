@@ -31,7 +31,7 @@ public class ReplayViewer : MonoBehaviour
     private Coroutine _playCoroutine;
     private int _uniqueID = -1;
 
-    public int Frame
+    private int Frame
     {
         get => _frame;
         set
@@ -42,12 +42,14 @@ public class ReplayViewer : MonoBehaviour
         }
     }
 
-    public void Start()
+    private void Start()
     {
         _replay = ReplayData.LoadLocal();
         InitializeReplay();
     }
 
+
+    // Attempt to load the remote replay specified in the input box.
     public void LoadRemoteReplay()
     {
         Debug.Log($"<color=yellow>Trying to load replay</color>: {_remoteReplayName.text}");
@@ -78,6 +80,8 @@ public class ReplayViewer : MonoBehaviour
         });
     }
 
+
+    // Play the currently loaded replay
     public void PlayReplay()
     {
         PauseReplay();
@@ -107,6 +111,7 @@ public class ReplayViewer : MonoBehaviour
         }
     }
 
+    // Pause the replay being played.
     public void PauseReplay()
     {
         SetPlayState(false);
@@ -116,6 +121,7 @@ public class ReplayViewer : MonoBehaviour
         }
     }
 
+    // Draws the next frame of the replay.
     public void DrawNextFrame()
     {
         PauseReplay();
@@ -128,6 +134,8 @@ public class ReplayViewer : MonoBehaviour
         DrawFrame(_replay.replayFrames[Frame]);
     }
 
+
+    // Draws the previous frame of the replay
     public void DrawPreviousFrame()
     {
         PauseReplay();
@@ -139,6 +147,7 @@ public class ReplayViewer : MonoBehaviour
         DrawFrame(_replay.replayFrames[Frame]);
     }
 
+    // Draw a frame specified by an index.
     public void DrawFrame(int index)
     {
         index = Mathf.Clamp(index, 0, _replay.replayFrames.Length);
@@ -198,7 +207,7 @@ public class ReplayViewer : MonoBehaviour
         }
     }
 
-    public void DrawObject(ReplayObject obj)
+    private void DrawObject(ReplayObject obj)
     {
         if (obj == null) { { Debug.LogWarning("Replay Object Null"); } return; }
         {
