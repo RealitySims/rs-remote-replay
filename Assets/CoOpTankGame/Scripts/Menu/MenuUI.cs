@@ -18,13 +18,13 @@ public class MenuUI : MonoBehaviour
 	//Changes the page to either the menu page, or play page.
 	public void SetPage (string page)
 	{
-		if(page == "menu"){				
-			menuPage.active = true;
-			playPage.active = false;
-		}
+		if(page == "menu"){
+            menuPage.SetActive(true);
+            playPage.SetActive(false);
+        }
 		if(page == "play"){
-			menuPage.active = false;
-			playPage.active = true;
+			menuPage.SetActive(false);
+			playPage.SetActive(true);
 		}
 	}
 

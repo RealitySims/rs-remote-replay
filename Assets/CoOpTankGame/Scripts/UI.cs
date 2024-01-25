@@ -46,7 +46,7 @@ public class UI : MonoBehaviour
 	//sets the text to display the winner which is sent through the "winner" value.
 	public void SetWinScreen (int winner)
 	{
-		winScreen.active = true;
+		winScreen.SetActive(true);
 
 		if(winner == 0){
 			winText.text = "<b><color=" + ToHex(game.player1Color) + ">PLAYER 1</color></b>\nWins The Game";

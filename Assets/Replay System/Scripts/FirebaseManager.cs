@@ -28,7 +28,7 @@ public class FirebaseManager : MonoBehaviour
 
     private void Start()
     {
-        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(async task =>
+        Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
         {
             var dependencyStatus = task.Result;
             if (dependencyStatus == Firebase.DependencyStatus.Available)

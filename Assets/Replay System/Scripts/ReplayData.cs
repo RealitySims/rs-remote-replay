@@ -59,6 +59,7 @@ internal class ReplayData
 
     public void Save(Action<string> remoteSaveSuccessful, bool cacheReplay, Action<string> logHandler = null)
     {
+        // Run on separate thread to av avoid hiccups.
         Task.Run(() =>
         {
             try
@@ -181,15 +182,13 @@ internal class ReplayData
     {
         var bytes = Encoding.UTF8.GetBytes(str);
 
-        using (var output = new MemoryStream())
+        using var output = new MemoryStream();
+        using (var gzip = new GZipStream(output, CompressionMode.Compress))
         {
-            using (var gzip = new GZipStream(output, CompressionMode.Compress))
-            {
-                gzip.Write(bytes, 0, bytes.Length);
-            }
-
-            return Convert.ToBase64String(output.ToArray());
+            gzip.Write(bytes, 0, bytes.Length);
         }
+
+        return Convert.ToBase64String(output.ToArray());
     }
 
     public static string DecompressString(string compressedStr)
