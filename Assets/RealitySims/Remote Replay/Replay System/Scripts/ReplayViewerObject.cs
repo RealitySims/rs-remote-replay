@@ -2,10 +2,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class ReplayViewerObject : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer _renderer = null;
+    private TilemapRenderer _tilemapRenderer = null;
+    private Tilemap _tilemap = null;
+    private Grid _grid = null;
+
     [SerializeField] private TMPro.TMP_Text _name = null;
 
     [SerializeField] private static Dictionary<string, GameObject> _prefabCache = new Dictionary<string, GameObject>();
@@ -42,7 +47,11 @@ public class ReplayViewerObject : MonoBehaviour
         name = $"{obj.name}, {obj.id}";
 
         GameObject prefab = GetPrefab(obj.guid, obj.name);
-        var spriteRenderer = prefab?.GetComponentInChildren<SpriteRenderer>();
+        SpriteRenderer spriteRenderer = prefab?.GetComponentInChildren<SpriteRenderer>();
+        TilemapRenderer tilemapRenderer = prefab?.GetComponentInChildren<TilemapRenderer>();
+        Tilemap tilemap = prefab?.GetComponentInChildren<Tilemap>();
+        Grid grid = prefab?.GetComponentInChildren<Grid>();
+
         if (useRealPrefab && prefab)
         {
             var instance = GameObject.Instantiate(prefab, transform);
@@ -60,6 +69,23 @@ public class ReplayViewerObject : MonoBehaviour
             CopySpriteRendererAttributes(spriteRenderer);
             _renderer.transform.localScale = GetRelativeScale(prefab.transform, spriteRenderer.transform);
             _renderer.transform.localPosition = GetRelativeOffset(prefab.transform, spriteRenderer.transform);
+            _name.gameObject.SetActive(false);
+        }
+         if (prefab && tilemapRenderer)
+        {
+            _renderer.enabled = false;
+            var _gridGameObject = new GameObject();            
+            _gridGameObject.name = "Grid";
+            _gridGameObject.transform.parent = this.transform;
+            _grid = _gridGameObject.AddComponent<Grid>();
+            var _tileGameObject = new GameObject();            
+            _tileGameObject.name = "Tiles";
+            _tileGameObject.transform.parent = _gridGameObject.transform;
+            _tilemap = _tileGameObject.AddComponent<Tilemap>();
+            _tilemapRenderer = _tileGameObject.AddComponent<TilemapRenderer>();            
+            CopyTilemapRendererAttributes(grid, tilemapRenderer, tilemap);
+            tilemapRenderer.transform.localScale = GetRelativeScale(prefab.transform, tilemapRenderer.transform);
+            tilemapRenderer.transform.localPosition = GetRelativeOffset(prefab.transform, tilemapRenderer.transform);
             _name.gameObject.SetActive(false);
         }
         else
@@ -118,6 +144,46 @@ public class ReplayViewerObject : MonoBehaviour
         _renderer.sortingOrder = spriteRenderer.sortingOrder;
         _renderer.sharedMaterial = spriteRenderer.sharedMaterial;
         _renderer.spriteSortPoint = spriteRenderer.spriteSortPoint;
+    }
+
+    private void CopyTilemapRendererAttributes(Grid grid, TilemapRenderer renderer, Tilemap tilemap)
+    {
+
+        _grid.cellGap = grid.cellGap;
+        _grid.cellSize = grid.cellSize;
+        _grid.cellLayout = grid.cellLayout;
+        grid.cellSwizzle = grid.cellSwizzle;
+
+        _tilemap.tileAnchor = tilemap.tileAnchor;
+        _tilemap.orientation = tilemap.orientation;
+        _tilemapRenderer.sharedMaterial = renderer.sharedMaterial;
+        _tilemapRenderer.sortingOrder = renderer.sortingOrder;
+        _tilemapRenderer.sortOrder = renderer.sortOrder;
+        _tilemapRenderer.mode = renderer.mode;
+        _tilemapRenderer.detectChunkCullingBounds = renderer.detectChunkCullingBounds;
+        _tilemapRenderer.chunkCullingBounds = renderer.chunkCullingBounds;
+        _tilemapRenderer.maskInteraction = renderer.maskInteraction;
+        _tilemapRenderer.sharedMaterial = renderer.sharedMaterial;
+
+        _tilemap.animationFrameRate = tilemap.animationFrameRate;
+        _tilemap.orientation = tilemap.orientation;
+        
+        // Get the bounds of the source tilemap
+        BoundsInt bounds = tilemap.cellBounds;
+
+        // Loop through all the cells in the source tilemap
+        for (int x = bounds.xMin; x < bounds.xMax; x++)
+        {
+            for (int y = bounds.yMin; y < bounds.yMax; y++)
+            {
+                // Get the cell position
+                Vector3Int cellPosition = new Vector3Int(x, y, 0);
+                // Get the tile from the source tilemap
+                TileBase tile = tilemap.GetTile(cellPosition);
+                // Set the tile to the destination tilemap
+                _tilemap.SetTile(cellPosition, tile);
+            }
+        }    
     }
 
     public static GameObject GetPrefab(string guid, string prefabName)
