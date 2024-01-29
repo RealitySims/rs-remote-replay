@@ -71,18 +71,18 @@ public class ReplayViewerObject : MonoBehaviour
             _renderer.transform.localPosition = GetRelativeOffset(prefab.transform, spriteRenderer.transform);
             _name.gameObject.SetActive(false);
         }
-         if (prefab && tilemapRenderer)
+        else if (prefab && tilemapRenderer)
         {
             _renderer.enabled = false;
-            var _gridGameObject = new GameObject();            
+            var _gridGameObject = new GameObject();
             _gridGameObject.name = "Grid";
             _gridGameObject.transform.parent = this.transform;
             _grid = _gridGameObject.AddComponent<Grid>();
-            var _tileGameObject = new GameObject();            
+            var _tileGameObject = new GameObject();
             _tileGameObject.name = "Tiles";
             _tileGameObject.transform.parent = _gridGameObject.transform;
             _tilemap = _tileGameObject.AddComponent<Tilemap>();
-            _tilemapRenderer = _tileGameObject.AddComponent<TilemapRenderer>();            
+            _tilemapRenderer = _tileGameObject.AddComponent<TilemapRenderer>();
             CopyTilemapRendererAttributes(grid, tilemapRenderer, tilemap);
             tilemapRenderer.transform.localScale = GetRelativeScale(prefab.transform, tilemapRenderer.transform);
             tilemapRenderer.transform.localPosition = GetRelativeOffset(prefab.transform, tilemapRenderer.transform);
@@ -148,7 +148,6 @@ public class ReplayViewerObject : MonoBehaviour
 
     private void CopyTilemapRendererAttributes(Grid grid, TilemapRenderer renderer, Tilemap tilemap)
     {
-
         _grid.cellGap = grid.cellGap;
         _grid.cellSize = grid.cellSize;
         _grid.cellLayout = grid.cellLayout;
@@ -167,7 +166,7 @@ public class ReplayViewerObject : MonoBehaviour
 
         _tilemap.animationFrameRate = tilemap.animationFrameRate;
         _tilemap.orientation = tilemap.orientation;
-        
+
         // Get the bounds of the source tilemap
         BoundsInt bounds = tilemap.cellBounds;
 
@@ -183,7 +182,7 @@ public class ReplayViewerObject : MonoBehaviour
                 // Set the tile to the destination tilemap
                 _tilemap.SetTile(cellPosition, tile);
             }
-        }    
+        }
     }
 
     public static GameObject GetPrefab(string guid, string prefabName)
@@ -199,7 +198,8 @@ public class ReplayViewerObject : MonoBehaviour
         var path = AssetDatabase.GUIDToAssetPath(guid);
         var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
 
-        if (obj) {
+        if (obj)
+        {
             _prefabCache[key] = obj;
             return obj;
         }
