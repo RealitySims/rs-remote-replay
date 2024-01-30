@@ -180,9 +180,10 @@ public class ReplayRecorder : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!Application.isEditor) { return; }
+#if DEBUG
         DrawRecordingUI();
         DrawMessageUI();
+#endif
     }
 
     private void DrawMessageUI()
