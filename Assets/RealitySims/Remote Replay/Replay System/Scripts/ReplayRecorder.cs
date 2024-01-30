@@ -59,7 +59,7 @@ public class ReplayRecorder : MonoBehaviour
     /// <summary>
     /// Stop the recording of a replay.
     /// </summary>
-    private void StopRecording()
+    public void StopRecording()
     {
         if (IsRecording)
         {
