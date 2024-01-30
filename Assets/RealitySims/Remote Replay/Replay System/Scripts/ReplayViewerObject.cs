@@ -221,6 +221,7 @@ public class ReplayViewerObject : MonoBehaviour
         return null;
     }
 
+#if UNITY_EDITOR
     public static GameObject[] FindAndSortPrefabs(string searchTerm)
     {
         // Find assets that match the search term
@@ -246,6 +247,7 @@ public class ReplayViewerObject : MonoBehaviour
 
         return assets;
     }
+#endif
 
     private static int CalculateRelevanceScore(string name, string searchTerm)
     {
