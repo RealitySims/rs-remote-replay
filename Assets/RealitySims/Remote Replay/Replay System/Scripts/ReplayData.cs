@@ -50,9 +50,18 @@ internal class ReplayData
                 return;
             }
 
-            var json = DecompressString(task.Result);
-            ReplayData data = JsonConvert.DeserializeObject<ReplayData>(json);
-            onCompleted(data);
+            try
+            {
+                var json = DecompressString(task.Result);
+                ReplayData data = JsonConvert.DeserializeObject<ReplayData>(json);
+                onCompleted(data);
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Failed to parse remote save file");
+                Debug.LogException(e);
+            }
         }));
     }
 
@@ -99,10 +108,9 @@ internal class ReplayData
         }, TaskScheduler.FromCurrentSynchronizationContext());
     }
 
-    private static void SaveToFirebase(string json, string replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
+    private static void SaveToFirebase(string data, string replayId, Action<string> remoteSaveSuccessful, Action<string> logHandler = null)
     {
         logHandler ??= Debug.Log;
-        string data = CompressString(json);
         UploadReplayToFirebase(data, replayId, remoteSaveSuccessful, logHandler);
     }
 
